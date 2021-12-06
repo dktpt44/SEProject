@@ -7,7 +7,9 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import TextField from '@mui/material/TextField';
 import CardContent from '@mui/material/CardContent';
-
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
+import Stack from '@mui/material/Stack';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import StaticDatePicker from '@mui/lab/StaticDatePicker';
@@ -59,9 +61,18 @@ const HomeLoggedinPage = () => {
   const [allBookings, setAllBookings] = useState([{ key: 1, abc: 1 }]);
   const [userBookings, setUserBookings] = useState([{ key: 1, abc: 1, bookings: ["abc"] }]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isUpdatingDone, setIsupdatingDone] = useState(false);
   const [isModelOpen, setModelOpen] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const userEmail = authContxt.email;
   const [mytabvalue, setmyValue] = useState(0);
+  const Spinner = () => <div className="myspinner"></div>;
+  const ShowAlert = () => <Stack sx={{ width: '100%' }} spacing={2}>
+    <Alert severity="success">
+      <AlertTitle>Success</AlertTitle>
+      Successfully made reservation for — <strong>{pickedDate.toDateString()}</strong>
+    </Alert>
+  </Stack>;
 
   const [pickedDate, setPickedDate] = useState(new Date());
   var ct = new Date();
@@ -87,16 +98,23 @@ const HomeLoggedinPage = () => {
 
   const confirmReservation = (event) => {
     event.preventDefault();
+    setIsUpdating(true);
     const updateFireDb = firebase.database().ref('allbookings').child(userBookings[0].id);
     var bookingObj = userBookings[0].bookings;
-    bookingObj = [...bookingObj,confirmDate.toJSON()];
+    bookingObj = [...bookingObj, confirmDate.toJSON()];
     updateFireDb.update({
       bookings: bookingObj,
-      noOfBookingsMade: userBookings[0].noOfBookingsMade+1
-    }).then((dat)=>{
+      noOfBookingsMade: userBookings[0].noOfBookingsMade + 1
+    }).then((dat) => {
       console.log("success.");
+      setIsUpdating(false);
+      setIsupdatingDone(true);
+      setTimeout(() => {
+        setModelOpen(false);
+        setIsupdatingDone(false);
+      }, 3000);
     })
-    ;
+      ;
 
   };
 
@@ -120,13 +138,13 @@ const HomeLoggedinPage = () => {
         setUserBookings(userTasks);
         setIsLoading(false);
         console.log(userBookings[0]);
-        
+
       })
       .catch((error) => {
         console.log(error);
       });
 
-  }, []);
+  }, [isUpdatingDone]);
 
   return (
     <div className="container conta">
@@ -260,12 +278,13 @@ const HomeLoggedinPage = () => {
             Please make a payment
           </ModalHeader>
           <ModalBody>
+            {isUpdatingDone && <ShowAlert />}
             Selected Date: <span className="asdfsdl">{confirmDate.toDateString()}</span>, at <span className="asdfsdl">{confirmDate.toTimeString()}</span>
 
 
 
-
-            <div className="container">
+            {isUpdating && <Spinner />}
+            {!isUpdatingDone && !isUpdating && <div className="container">
               <div className="row">
 
                 <div className="col-12 mt-4">
@@ -329,16 +348,14 @@ const HomeLoggedinPage = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div>}
 
           </ModalBody>
           <ModalFooter>
-            <Button
-              color="primary"
-              onClick={confirmReservation}
-            >
+            <Button color="primary" onClick={confirmReservation}>
               Confirm
             </Button>
+
             {' '}
             <Button onClick={() => {
               setModelOpen(false);
