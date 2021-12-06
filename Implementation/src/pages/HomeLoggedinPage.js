@@ -54,7 +54,6 @@ function a11yProps(index) {
   };
 }
 
-
 const HomeLoggedinPage = () => {
   const authContxt = useContext(AuthContext);
   const [allBookings, setAllBookings] = useState([{ key: 1, abc: 1 }]);
@@ -65,7 +64,11 @@ const HomeLoggedinPage = () => {
   const [mytabvalue, setmyValue] = useState(0);
 
   const [pickedDate, setPickedDate] = useState(new Date());
-  const [pickedTime, setPickedTime] = useState(new Date());
+  var ct = new Date();
+  ct.setMinutes(0);
+  ct.setSeconds(0);
+  const [pickedTime, setPickedTime] = useState(ct);
+
   const [confirmDate, setConfirmDate] = useState(new Date());
   const maxDate = new Date();
   maxDate.setDate(maxDate.getDate() + 20);
@@ -83,10 +86,19 @@ const HomeLoggedinPage = () => {
   };
 
   const confirmReservation = (event) => {
+    event.preventDefault();
+    const updateFireDb = firebase.database().ref('allbookings').child(userBookings[0].id);
+    var bookingObj = userBookings[0].bookings;
+    bookingObj = [...bookingObj,confirmDate.toJSON()];
+    updateFireDb.update({
+      bookings: bookingObj,
+      noOfBookingsMade: userBookings[0].noOfBookingsMade+1
+    }).then((dat)=>{
+      console.log("success.");
+    })
+    ;
 
-
-
-  }
+  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -108,27 +120,11 @@ const HomeLoggedinPage = () => {
         setUserBookings(userTasks);
         setIsLoading(false);
         console.log(userBookings[0]);
+        
       })
       .catch((error) => {
         console.log(error);
       });
-
-    // testing update
-    // const todo
-
-    fetch(`${FIREBASE_DOMAIN}/allbookings.json/${userBookings[0].id}`, {
-      method: 'PATCH',
-      body: JSON.stringify({name: "New Name"}),
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    }).then(response => response.json())
-      .catch(() => {
-        console.log("ERRor!");
-      });
-
-      // update firebase-db
-
 
   }, []);
 
@@ -246,7 +242,7 @@ const HomeLoggedinPage = () => {
               </TabPanel>
               <TabPanel value={mytabvalue} index={1}>
                 <p>
-                  Explore the sky with google Sky
+                  List of upcoming reservations.
                 </p>
               </TabPanel>
             </Box>
@@ -257,7 +253,7 @@ const HomeLoggedinPage = () => {
       <div>
         <Modal
           centered
-          fullscreen=""
+          fullscreen
           size="xl"
           isOpen={isModelOpen}>
           <ModalHeader >
@@ -269,60 +265,60 @@ const HomeLoggedinPage = () => {
 
 
 
-            <div class="container">
-              <div class="row">
+            <div className="container">
+              <div className="row">
 
-                <div class="col-12 mt-4">
-                  <div class="card p-3">
-                    <p class="mb-0 fw-bold h4">Payment Methods</p>
+                <div className="col-12 mt-4">
+                  <div className="card p-3">
+                    <p className="mb-0 fw-bold h4">Payment Methods</p>
                   </div>
                 </div>
               </div>
               <div className="row">
 
-                <div class="col-12">
-                  <div class="">
+                <div className="col-12">
+                  <div className="">
 
-                    <div class="card-body border p-0">
-                      <div class="row">
-                        <div class="col-md-5 marginTopClass">
-                          <div class="card p-3">
-                            <div class="img-box"> <img src="https://www.freepnglogos.com/uploads/visa-logo-download-png-21.png" alt="" /> </div>
-                            <div class="number"> <label class="fw-bold" for="">**** **** **** 1060</label> </div>
-                            <div class="d-flex align-items-center justify-content-between"> <small><span class="fw-bold">Expiry date:</span><span>10/24</span></small> <small><span class="fw-bold">Name: </span><span>{userBookings[0].name}</span></small> </div>
+                    <div className="card-body border p-0">
+                      <div className="row">
+                        <div className="col-md-5 marginTopClass">
+                          <div className="card p-3">
+                            <div className="img-box"> <img src="https://www.freepnglogos.com/uploads/visa-logo-download-png-21.png" alt="" /> </div>
+                            <div className="number"> <label className="fw-bold" htmlFor="">**** **** **** 1060</label> </div>
+                            <div className="d-flex align-items-center justify-content-between"> <small><span className="fw-bold">Expiry date:</span><span>10/24</span></small> <small><span className="fw-bold">Name: </span><span>{userBookings[0].name}</span></small> </div>
                           </div>
                         </div>
-                        <div class="col-md-5 offset-md-1 marginTopClass">
-                          <div class="card p-3">
-                            <div class="img-box"> <img src="https://www.freepnglogos.com/uploads/mastercard-png/file-mastercard-logo-svg-wikimedia-commons-4.png" alt="" /> </div>
-                            <div class="number"> <label class="fw-bold">**** **** **** 1060</label> </div>
-                            <div class="d-flex align-items-center justify-content-between"> <small><span class="fw-bold">Expiry date:</span><span>10/24</span></small> <small><span class="fw-bold">Name: </span><span>{userBookings[0].name}</span></small> </div>
+                        <div className="col-md-5 offset-md-1 marginTopClass">
+                          <div className="card p-3">
+                            <div className="img-box"> <img src="https://www.freepnglogos.com/uploads/mastercard-png/file-mastercard-logo-svg-wikimedia-commons-4.png" alt="" /> </div>
+                            <div className="number"> <label className="fw-bold">**** **** **** 1060</label> </div>
+                            <div className="d-flex align-items-center justify-content-between"> <small><span className="fw-bold">Expiry date:</span><span>10/24</span></small> <small><span className="fw-bold">Name: </span><span>{userBookings[0].name}</span></small> </div>
                           </div>
                         </div>
                       </div>
 
-                      <div class="collapse show p-3 pt-0" id="collapseExample">
-                        <div class="row">
-                          <div class="col-lg-5 mb-lg-0 mb-3">
-                            <p class="h4 mb-0">Summary</p>
-                            <p class="mb-0"><span class="fw-bold">Product:</span><span class="c-green"> One Hour Court Booking</span> </p>
-                            <p class="mb-0"> <span class="fw-bold">Price:</span> <span class="c-green">:$19.99</span> </p>
-                            <p class="mb-0">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Atque nihil neque quisquam aut repellendus, dicta vero? Animi dicta cupiditate, facilis provident quibusdam ab quis, iste harum ipsum hic, nemo qui!</p>
+                      <div className="collapse show p-3 pt-0" id="collapseExample">
+                        <div className="row">
+                          <div className="col-lg-5 mb-lg-0 mb-3">
+                            <p className="h4 mb-0">Summary</p>
+                            <p className="mb-0"><span className="fw-bold">Product:</span><span className="c-green"> One Hour Court Booking</span> </p>
+                            <p className="mb-0"> <span className="fw-bold">Price:</span> <span className="c-green">:$19.99</span> </p>
+                            <p className="mb-0">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Atque nihil neque quisquam aut repellendus, dicta vero? Animi dicta cupiditate, facilis provident quibusdam ab quis, iste harum ipsum hic, nemo qui!</p>
                           </div>
-                          <div class="col-lg-7">
-                            <form action="" class="form">
-                              <div class="row">
-                                <div class="col-12">
-                                  <div class="form__div"> <input type="text" class="form-control" placeholder=" " /> <label for="" class="form__label">Card Number</label> </div>
+                          <div className="col-lg-7">
+                            <form action="" className="form">
+                              <div className="row">
+                                <div className="col-12">
+                                  <div className="form__div"> <input type="text" className="form-control" placeholder=" " /> <label htmlFor="" className="form__label">Card Number</label> </div>
                                 </div>
-                                <div class="col-6">
-                                  <div class="form__div"> <input type="text" class="form-control" placeholder=" " /> <label for="" class="form__label">MM / yy</label> </div>
+                                <div className="col-6">
+                                  <div className="form__div"> <input type="text" className="form-control" placeholder=" " /> <label htmlFor="" className="form__label">MM / yy</label> </div>
                                 </div>
-                                <div class="col-6">
-                                  <div class="form__div"> <input type="password" class="form-control" placeholder=" " /> <label for="" class="form__label">cvv code</label> </div>
+                                <div className="col-6">
+                                  <div className="form__div"> <input type="password" className="form-control" placeholder=" " /> <label htmlFor="" className="form__label">cvv code</label> </div>
                                 </div>
-                                <div class="col-12">
-                                  <div class="form__div"> <input type="text" class="form-control" placeholder=" " /> <label for="" class="form__label">name on the card</label> </div>
+                                <div className="col-12">
+                                  <div className="form__div"> <input type="text" className="form-control" placeholder=" " /> <label htmlFor="" className="form__label">name on the card</label> </div>
                                 </div>
                               </div>
                             </form>
