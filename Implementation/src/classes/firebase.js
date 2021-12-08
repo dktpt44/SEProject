@@ -1,5 +1,6 @@
+// Initializing firebase from here
 import firebase from 'firebase';
-
+// required parameters
 const firebaseConfig = {
   apiKey: "AIzaSyBhi9U8enoQsrbBF_coz9zM1hUnZOw4Yj4",
   authDomain: "seprojectgroup.firebaseapp.com",

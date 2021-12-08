@@ -1,6 +1,9 @@
 import classes from './ProfileForm.module.css';
 
+// user profile page
 const ProfileForm = () => {
+
+  // rendering view
   return (
     <form className={classes.form}>
       <div className={classes.control}>

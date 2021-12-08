@@ -1,5 +1,5 @@
 import './Footer.css';
-
+// footer rendering, basic html design
 const Footer = () => {
   return (
     <div>

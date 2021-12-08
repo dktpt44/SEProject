@@ -1,11 +1,12 @@
+// Login page
 import { useState, useRef, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import AuthContext from '../../store/auth-context';
 import {useHistory} from 'react-router-dom';
-
 import './AuthForm.css';
 
 const AuthForm = () => {
+  // variable names are self explanatory in what they are used for
   const userEmail = useRef();
   const userPass = useRef();
   const [isLogging, setIsLogging] = useState(false);
@@ -13,6 +14,7 @@ const AuthForm = () => {
   const Spinner = () => <div className="myspinner"></div>;
   const myHistory = useHistory();
   const submitForm = (event) => {
+    // when user clicks submit button
     event.preventDefault();
     setIsLogging(true);
 
@@ -21,6 +23,7 @@ const AuthForm = () => {
 
     // optional: Add validation
     
+    // firebase authentication
     fetch(
       'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBhi9U8enoQsrbBF_coz9zM1hUnZOw4Yj4',
       {
@@ -38,6 +41,7 @@ const AuthForm = () => {
     .then((res) => {
       setIsLogging(false);
       if (res.ok) {
+        // authentication success
         return res.json();
         // ...
       } else {
@@ -52,17 +56,15 @@ const AuthForm = () => {
       }
     })
     .then(data => {
+      // redirecting user
       authContxt.login(data.idToken, enteredEmail);
       myHistory.replace('/');
     })
     .catch(err => {
       console.log(err.message);
     });
-
-
-
-
   };
+  // rendering componenets
   return (
     <div className="container main-wrapper">
       <div className="row justify-content-center">

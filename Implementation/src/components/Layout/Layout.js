@@ -3,6 +3,7 @@ import { Fragment } from 'react';
 import MainNavigation from './MainNavigation';
 import Footer from './Footer';
 
+// Layout for the app. consists of header and footer
 const Layout = (props) => {
   return (
     <Fragment>

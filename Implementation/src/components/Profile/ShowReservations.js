@@ -1,3 +1,4 @@
+// shows the list of reservation
 import { useState } from 'react';
 import { Button, ModalHeader, ModalBody, ModalFooter, Modal } from 'reactstrap';
 import Alert from '@mui/material/Alert';
@@ -7,13 +8,17 @@ import './ShowReservations.css';
 import firebase from '../../classes/firebase';
 
 const ShowReservations = (props) => {
+  // list of reservations
   var allReser = props.allReserves;
+  // user instance
   const userBookings = props.userBookings;
+  // callback function to call when the operation is done
   const callbackFn = props.callbackFn;
   if (allReser == null)
     allReser = [];
   if (allReser[0] === "dummy")
     allReser.shift();
+    // states
   const [allReservesArr, setAllResArr] = useState(allReser);
   const [isModelOpen, setModelOpen] = useState(false);
   const [isSending, setIsSending] = useState(false);
@@ -24,6 +29,7 @@ const ShowReservations = (props) => {
 
   const Spinner = () => <div className="myspinner"></div>;
 
+  // alert to display sucess/error messages
   const ShowAlert = () => <Stack sx={{ width: '100%' }} spacing={2}>
     <Alert severity="success">
       <AlertTitle>Success</AlertTitle>
@@ -31,12 +37,14 @@ const ShowReservations = (props) => {
     </Alert>
   </Stack>;
 
+  // self explanatory
   const removeReservation = (event) => {
     setIsSending(true);
     var tempxx = allReservesArr.filter((thisDat) => (
       thisDat !== confirmDate.toJSON()
     ));
 
+    // calling database to update data
     updateFireDb.update({
       bookings: tempxx,
       noOfBookingsMade: userBookings[0].noOfBookingsMade - 1
@@ -48,6 +56,7 @@ const ShowReservations = (props) => {
     });
   }
 
+  // rendering one booking information
   const myTableRow = allReservesArr.map((reserveDat, i) => {
     const thisDate = new Date(reserveDat);
     return (
@@ -66,6 +75,7 @@ const ShowReservations = (props) => {
     )
   });
 
+  // rendering the view
   return (
     <div>
       <div className="col-12">
@@ -84,7 +94,6 @@ const ShowReservations = (props) => {
 
         </ul>
       </div>
-
 
       <Modal
         centered

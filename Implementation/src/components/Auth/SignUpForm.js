@@ -1,3 +1,4 @@
+// signup form
 import { useState, useRef, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import './SignUpForm.css';
@@ -7,6 +8,7 @@ import AuthContext from '../../store/auth-context';
 const FIREBASE_DOMAIN = 'https://seprojectgroup-default-rtdb.firebaseio.com/';
 
 const SignUpForm = () => {
+  // variable names are self explanatory
   const userEmail = useRef();
   const userPass = useRef();
   const userNamex = useRef();
@@ -15,6 +17,7 @@ const SignUpForm = () => {
   const Spinner = () => <div className="myspinner"></div>;
   const myHistory = useHistory();
   const submitForm = (event) => {
+    // clicks sign up button
     event.preventDefault();
     setIsLogging(true);
 
@@ -24,6 +27,7 @@ const SignUpForm = () => {
     // optional: Add validation
 
 
+    // registering user to the system
     fetch(
       'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBhi9U8enoQsrbBF_coz9zM1hUnZOw4Yj4',
       {
@@ -53,6 +57,7 @@ const SignUpForm = () => {
       }
     })
       .then(data => {
+        // success
         if (data) {
           const sendData = {
             name: enteredName,
@@ -71,6 +76,7 @@ const SignUpForm = () => {
           }).then(response => response.json())
             .then(() => {
               setIsLogging(false);
+              // redirecting users
               authContxt.login(data.idToken, enteredEmail);
               myHistory.replace('/');
             })
@@ -85,6 +91,7 @@ const SignUpForm = () => {
       });
   };
 
+  // rendering user layout
   return (
     <div className="container main-wrapper">
       <div className="row justify-content-center">

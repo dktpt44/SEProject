@@ -4,12 +4,14 @@ import { useContext } from 'react';
 import './MainNavigation.css';
 import AuthContext from '../../store/auth-context';
 
+// its the navigation bar ie header
 const MainNavigation = () => {
   const authContxt = useContext(AuthContext);
   const isLoggedIn = authContxt.isLoggedIn;
   const logUserOut = () =>{
     authContxt.logout();
   }
+  // render components
   return (
     <div className="mainClass">
       <div className="container">
