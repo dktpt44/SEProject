@@ -63,8 +63,8 @@
   margin-left: 15px;
 }
 .submitBtnDvi {
-  margin-top: 26px;
-  margin-bottom: 18px;
+  margin-top: 32px;
+  margin-bottom: 32px;
 }
 .asdfsdl {
   color: rgb(5, 199, 199);
@@ -79,7 +79,6 @@
   background: #fff;
   border-radius: 0px;
 }
-
 
 .container .card .img-box {
   width: 80px;
@@ -118,7 +117,6 @@
 .c-green {
   color: green;
 }
-
 
 .form__div {
   height: 50px;
@@ -172,8 +170,12 @@
   box-shadow: none;
 }
 
-.marginTopClass{
+.marginTopClass {
   margin-top: 20px;
-  margin-left: 15px;
-  margin-bottom: 25px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 28px;
+}
+.dateTimePickerss{
+  margin-top: 32px;
 }

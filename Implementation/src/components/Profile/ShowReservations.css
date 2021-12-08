@@ -1,0 +1,50 @@
+.tableheadh2 {
+  font-size: 26px;
+  margin: 20px 0;
+  text-align: center;
+}
+.MuiBox-root{
+  padding: 0 !important;
+}
+.reservationTable {
+  padding: 0;
+}
+.reservationTable li {
+  border-radius: 3px;
+  padding: 25px 30px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25px;
+  font-family: 'lato', sans-serif;
+}
+.reservationTable .table-header {
+  background-color: #95a5a6;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.reservationTable .table-row {
+  background-color: #fff;
+  box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+}
+.reservationTable .coll-1 {
+  flex-basis: 10%;
+}
+.reservationTable .coll-2 {
+  flex-basis: 25%;
+}
+.reservationTable .coll-3 {
+  flex-basis: 25%;
+}
+.reservationTable .coll-4 {
+  flex-basis: 30%;
+}
+.reservationTable .coll-5 {
+  flex-basis: 10%;
+}
+
+.divadfjsl{
+  margin-top: 10px;
+  padding: 20px;
+  margin-bottom: 10px;
+}
