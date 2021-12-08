@@ -15,7 +15,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import StaticDatePicker from '@mui/lab/StaticDatePicker';
 import StaticTimePicker from '@mui/lab/StaticTimePicker';
 import firebase from '../classes/firebase';
-
+import ShowReservations from '../components/Profile/ShowReservations';
 import { Button, ModalHeader, ModalBody, ModalFooter, Modal } from 'reactstrap';
 
 import AuthContext from "../store/auth-context";
@@ -59,11 +59,12 @@ function a11yProps(index) {
 const HomeLoggedinPage = () => {
   const authContxt = useContext(AuthContext);
   const [allBookings, setAllBookings] = useState([{ key: 1, abc: 1 }]);
+  const [bookingsArr, setBookingsArr] = useState([]);
   const [userBookings, setUserBookings] = useState([{ key: 1, abc: 1, bookings: ["abc"] }]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdatingDone, setIsupdatingDone] = useState(false);
-  const [isModelOpen, setModelOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isModelOpen, setModelOpen] = useState(false);
   const userEmail = authContxt.email;
   const [mytabvalue, setmyValue] = useState(0);
   const Spinner = () => <div className="myspinner"></div>;
@@ -79,7 +80,6 @@ const HomeLoggedinPage = () => {
   ct.setMinutes(0);
   ct.setSeconds(0);
   const [pickedTime, setPickedTime] = useState(ct);
-
   const [confirmDate, setConfirmDate] = useState(new Date());
   const maxDate = new Date();
   maxDate.setDate(maxDate.getDate() + 20);
@@ -101,20 +101,21 @@ const HomeLoggedinPage = () => {
     setIsUpdating(true);
     const updateFireDb = firebase.database().ref('allbookings').child(userBookings[0].id);
     var bookingObj = userBookings[0].bookings;
-    bookingObj = [...bookingObj, confirmDate.toJSON()];
+    if (bookingObj === null || bookingObj === undefined) {
+      bookingObj = [];
+    }
+    bookingObj.push(confirmDate.toJSON())
     updateFireDb.update({
       bookings: bookingObj,
       noOfBookingsMade: userBookings[0].noOfBookingsMade + 1
     }).then((dat) => {
-      console.log("success.");
       setIsUpdating(false);
       setIsupdatingDone(true);
       setTimeout(() => {
         setModelOpen(false);
         setIsupdatingDone(false);
       }, 3000);
-    })
-      ;
+    });
 
   };
 
@@ -132,12 +133,17 @@ const HomeLoggedinPage = () => {
           allTasks.push(taskObj);
         }
         setAllBookings(allTasks);
+
         let userTasks = allTasks.filter(function (value) {
           return value.email === userEmail;
         });
         setUserBookings(userTasks);
         setIsLoading(false);
-        console.log(userBookings[0]);
+        const aasdfsdf = userTasks[0].bookings;
+        let tempBooking = aasdfsdf.filter(function (valx) {
+          return valx !== "dummy";
+        });
+        setBookingsArr(tempBooking);
 
       })
       .catch((error) => {
@@ -160,7 +166,7 @@ const HomeLoggedinPage = () => {
           <div className="row">
             <div className="col-3 offset-1">
               <p className="insideDivDesc">
-                {userBookings[0].bookings.length - 1}
+                {bookingsArr.length}
               </p>
             </div>
             <div className="col-6 offset-2 imgClass">
@@ -219,7 +225,7 @@ const HomeLoggedinPage = () => {
               </Box>
 
               <TabPanel value={mytabvalue} index={0}>
-                <div className="row">
+                <div className="row dateTimePickerss">
                   <div className="col-7 borderAround1">
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                       <StaticDatePicker
@@ -259,9 +265,10 @@ const HomeLoggedinPage = () => {
 
               </TabPanel>
               <TabPanel value={mytabvalue} index={1}>
-                <p>
-                  List of upcoming reservations.
-                </p>
+                <ShowReservations allReserves={userBookings[0].bookings} userBookings={userBookings} callbackFn={() => {
+                  console.log("done");
+                  setIsupdatingDone(true);
+                }} />
               </TabPanel>
             </Box>
           </CardContent>
@@ -281,8 +288,6 @@ const HomeLoggedinPage = () => {
             {isUpdatingDone && <ShowAlert />}
             Selected Date: <span className="asdfsdl">{confirmDate.toDateString()}</span>, at <span className="asdfsdl">{confirmDate.toTimeString()}</span>
 
-
-
             {isUpdating && <Spinner />}
             {!isUpdatingDone && !isUpdating && <div className="container">
               <div className="row">
@@ -300,29 +305,32 @@ const HomeLoggedinPage = () => {
 
                     <div className="card-body border p-0">
                       <div className="row">
-                        <div className="col-md-5 marginTopClass">
-                          <div className="card p-3">
-                            <div className="img-box"> <img src="https://www.freepnglogos.com/uploads/visa-logo-download-png-21.png" alt="" /> </div>
-                            <div className="number"> <label className="fw-bold" htmlFor="">**** **** **** 1060</label> </div>
-                            <div className="d-flex align-items-center justify-content-between"> <small><span className="fw-bold">Expiry date:</span><span>10/24</span></small> <small><span className="fw-bold">Name: </span><span>{userBookings[0].name}</span></small> </div>
-                          </div>
-                        </div>
-                        <div className="col-md-5 offset-md-1 marginTopClass">
-                          <div className="card p-3">
-                            <div className="img-box"> <img src="https://www.freepnglogos.com/uploads/mastercard-png/file-mastercard-logo-svg-wikimedia-commons-4.png" alt="" /> </div>
-                            <div className="number"> <label className="fw-bold">**** **** **** 1060</label> </div>
-                            <div className="d-flex align-items-center justify-content-between"> <small><span className="fw-bold">Expiry date:</span><span>10/24</span></small> <small><span className="fw-bold">Name: </span><span>{userBookings[0].name}</span></small> </div>
+                        <div className="col-10 marginTopClass">
+                          <div className="row">
+                            <div className="col-md-6">
+                              <div className="card p-3">
+                                <div className="img-box"> <img src="https://www.freepnglogos.com/uploads/visa-logo-download-png-21.png" alt="" /> </div>
+                                <div className="number"> <label className="fw-bold" htmlFor="">**** **** **** 1060</label> </div>
+                                <div className="d-flex align-items-center justify-content-between"> <small><span className="fw-bold">Expiry date:</span><span>10/24</span></small> <small><span className="fw-bold">Name: </span><span>{userBookings[0].name}</span></small> </div>
+                              </div>
+                            </div>
+                            <div className="col-md-6">
+                              <div className="card p-3">
+                                <div className="img-box"> <img src="https://www.freepnglogos.com/uploads/mastercard-png/file-mastercard-logo-svg-wikimedia-commons-4.png" alt="" /> </div>
+                                <div className="number"> <label className="fw-bold">**** **** **** 1060</label> </div>
+                                <div className="d-flex align-items-center justify-content-between"> <small><span className="fw-bold">Expiry date:</span><span>10/24</span></small> <small><span className="fw-bold">Name: </span><span>{userBookings[0].name}</span></small> </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
-
                       <div className="collapse show p-3 pt-0" id="collapseExample">
                         <div className="row">
-                          <div className="col-lg-5 mb-lg-0 mb-3">
-                            <p className="h4 mb-0">Summary</p>
+                          <div className="col-lg-5">
+                            <p className="h4">Summary</p>
                             <p className="mb-0"><span className="fw-bold">Product:</span><span className="c-green"> One Hour Court Booking</span> </p>
-                            <p className="mb-0"> <span className="fw-bold">Price:</span> <span className="c-green">:$19.99</span> </p>
-                            <p className="mb-0">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Atque nihil neque quisquam aut repellendus, dicta vero? Animi dicta cupiditate, facilis provident quibusdam ab quis, iste harum ipsum hic, nemo qui!</p>
+                            <p className="mb-0"> <span className="fw-bold">Price:</span> <span className="c-green">$19.99</span> </p>
+                            <p className="mb-0">Happy Climbing!</p>
                           </div>
                           <div className="col-lg-7">
                             <form action="" className="form">
@@ -352,15 +360,17 @@ const HomeLoggedinPage = () => {
 
           </ModalBody>
           <ModalFooter>
-            <Button color="primary" onClick={confirmReservation}>
+            {!isUpdatingDone && !isUpdating && <Button color="primary" onClick={confirmReservation}>
               Confirm
-            </Button>
+            </Button>}
 
             {' '}
             <Button onClick={() => {
               setModelOpen(false);
             }}>
-              Cancel
+              {!isUpdatingDone && !isUpdating && "Cancel"}
+              {!isUpdatingDone && isUpdating && "Saving ..."}
+              {isUpdatingDone && !isUpdating && "Close"}
             </Button>
           </ModalFooter>
         </Modal>
