@@ -16,7 +16,7 @@ function App() {
       <Switch>
         <Route path='/' exact>
           {authContxt.isLoggedIn && <HomeLoggedinPage />}
-          {!authContxt.isLoggedIn &&  <HomePage />}
+          {!authContxt.isLoggedIn && <HomePage />}
 
         </Route>
         {!authContxt.isLoggedIn && (
@@ -28,9 +28,12 @@ function App() {
           {authContxt.isLoggedIn && <UserProfile />}
           {!authContxt.isLoggedIn && <Redirect to='/login' />}
         </Route>
-        <Route path='/membership'>
+
+        {authContxt.isLoggedIn && <Route path='/membership'>
           <Membership />
         </Route>
+        }
+
         {!authContxt.isLoggedIn && (
           <Route path='/signup'>
             <SignUpPage />

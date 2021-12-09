@@ -8,7 +8,7 @@ import AuthContext from '../../store/auth-context';
 const MainNavigation = () => {
   const authContxt = useContext(AuthContext);
   const isLoggedIn = authContxt.isLoggedIn;
-  const logUserOut = () =>{
+  const logUserOut = () => {
     authContxt.logout();
   }
   // render components
@@ -33,10 +33,11 @@ const MainNavigation = () => {
                 <li>
                   <Link to='/profile'>Profile</Link>
                 </li>}
-
-              <li>
-                <Link to='/membership'>Membership</Link>
-              </li>
+              {isLoggedIn &&
+                <li>
+                  <Link to='/membership'>Membership</Link>
+                </li>
+              }
               {isLoggedIn &&
                 <li>
                   <button onClick={logUserOut}>Logout</button>

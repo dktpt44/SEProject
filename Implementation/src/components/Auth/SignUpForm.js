@@ -53,6 +53,7 @@ const SignUpForm = () => {
             errorMessage = data.error.message;
           }
           alert(errorMessage);
+          setIsLogging(false);
         });
       }
     })
